@@ -23,5 +23,6 @@ struct FloatingWindowApp: App {
         extensionManager.setPanelController(panelController)
         extensionManager.register(PomodoroExtension())
         extensionManager.register(TaskListExtension())
+        extensionManager.register(ClaudeUsageExtension())
     }
 }

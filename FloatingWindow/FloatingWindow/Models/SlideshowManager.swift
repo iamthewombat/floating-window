@@ -1,5 +1,8 @@
 import AppKit
 import Combine
+import os.log
+
+private let logger = Logger(subsystem: "com.floatingwindow.app", category: "SlideshowManager")
 
 @MainActor
 class SlideshowManager: ObservableObject {
@@ -12,6 +15,7 @@ class SlideshowManager: ObservableObject {
     private(set) var imageFiles: [URL] = []
     private var timer: Timer?
     private var history: [Int] = [] // indices visited, for "previous" in shuffle mode
+    private let maxHistorySize = 100
 
     private let supportedExtensions: Set<String> = [
         "png", "jpg", "jpeg", "gif", "heic", "heif", "webp", "tiff", "tif", "bmp"
@@ -45,6 +49,7 @@ class SlideshowManager: ObservableObject {
                 }
                 .sorted { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
         } catch {
+            logger.error("Failed to scan folder: \(error.localizedDescription)")
             imageFiles = []
         }
     }
@@ -53,24 +58,19 @@ class SlideshowManager: ObservableObject {
     private let maxPixelDimension: CGFloat = 4096
 
     func loadCurrentImage() {
-        guard !imageFiles.isEmpty else {
-            currentImage = nil
-            return
-        }
-        let url = imageFiles[currentIndex]
-
-        if let image = loadImage(from: url) {
-            currentImage = image
-        } else {
-            // Corrupt or unreadable image — remove from list and try next
-            imageFiles.remove(at: currentIndex)
-            if imageFiles.isEmpty {
-                currentImage = nil
+        while !imageFiles.isEmpty {
+            let url = imageFiles[currentIndex]
+            if let image = loadImage(from: url) {
+                currentImage = image
                 return
             }
-            currentIndex = currentIndex % imageFiles.count
-            loadCurrentImage()
+            // Corrupt or unreadable — remove and try next
+            imageFiles.remove(at: currentIndex)
+            if !imageFiles.isEmpty {
+                currentIndex = currentIndex % imageFiles.count
+            }
         }
+        currentImage = nil
     }
 
     /// Loads an image from a URL, downsampling very large images to save memory.
@@ -107,6 +107,9 @@ class SlideshowManager: ObservableObject {
     func nextImage() {
         guard !imageFiles.isEmpty else { return }
         history.append(currentIndex)
+        if history.count > maxHistorySize {
+            history.removeFirst()
+        }
         if shuffleEnabled && imageFiles.count > 1 {
             var next: Int
             repeat {

@@ -41,6 +41,7 @@ class AppState: ObservableObject {
     let slideshowManager = SlideshowManager()
 
     private var cancellables = Set<AnyCancellable>()
+    private var securityScopedURL: URL?
 
     init() {
         // Restore saved settings
@@ -56,9 +57,22 @@ class AppState: ObservableObject {
         slideshowManager.$currentImage
             .receive(on: DispatchQueue.main)
             .assign(to: &$currentImage)
+
+        // Restore last folder from security-scoped bookmark
+        if let url = store.resolveBookmark() {
+            if url.startAccessingSecurityScopedResource() {
+                securityScopedURL = url
+                selectFolder(url)
+            }
+        }
     }
 
     func selectFolder(_ url: URL) {
+        // Release previous security-scoped access
+        if let prev = securityScopedURL, prev != url {
+            prev.stopAccessingSecurityScopedResource()
+            securityScopedURL = nil
+        }
         imageSource = .folder(url)
         slideshowManager.setFolder(url)
         updateRotation()

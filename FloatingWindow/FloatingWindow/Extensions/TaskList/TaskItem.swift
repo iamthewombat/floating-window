@@ -29,7 +29,8 @@ class TaskListState: ObservableObject {
     func addTask(_ text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        tasks.insert(TaskItem(text: trimmed), at: 0)
+        let capped = String(trimmed.prefix(1000))
+        tasks.insert(TaskItem(text: capped), at: 0)
     }
 
     func toggleTask(_ id: UUID) {

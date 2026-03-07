@@ -10,6 +10,47 @@ class SettingsStore {
         set { defaults.set(newValue, forKey: "lastFolderPath") }
     }
 
+    /// Store a security-scoped bookmark for sandbox-safe folder access across launches.
+    var lastFolderBookmark: Data? {
+        get { defaults.data(forKey: "lastFolderBookmark") }
+        set { defaults.set(newValue, forKey: "lastFolderBookmark") }
+    }
+
+    /// Create and store a security-scoped bookmark for the given URL.
+    func saveBookmark(for url: URL) {
+        do {
+            let bookmark = try url.bookmarkData(
+                options: .withSecurityScope,
+                includingResourceValuesForKeys: nil,
+                relativeTo: nil
+            )
+            lastFolderBookmark = bookmark
+            lastFolderPath = url.path
+        } catch {
+            lastFolderPath = url.path
+        }
+    }
+
+    /// Resolve the stored security-scoped bookmark to a URL. Caller must call stopAccessingSecurityScopedResource().
+    func resolveBookmark() -> URL? {
+        guard let bookmark = lastFolderBookmark else { return nil }
+        var isStale = false
+        do {
+            let url = try URL(
+                resolvingBookmarkData: bookmark,
+                options: .withSecurityScope,
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            )
+            if isStale {
+                saveBookmark(for: url)
+            }
+            return url
+        } catch {
+            return nil
+        }
+    }
+
     var rotationInterval: TimeInterval {
         get {
             let val = defaults.double(forKey: "rotationInterval")

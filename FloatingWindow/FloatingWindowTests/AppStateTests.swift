@@ -11,6 +11,9 @@ final class AppStateTests: XCTestCase {
         UserDefaults.standard.removeObject(forKey: "rotationInterval")
         UserDefaults.standard.removeObject(forKey: "slideshowEnabled")
         UserDefaults.standard.removeObject(forKey: "aspectMode")
+        UserDefaults.standard.removeObject(forKey: "lastFolderBookmark")
+        UserDefaults.standard.removeObject(forKey: "lastFolderPath")
+        UserDefaults.standard.removeObject(forKey: "shuffleEnabled")
 
         appState = AppState()
 
@@ -36,6 +39,9 @@ final class AppStateTests: XCTestCase {
         UserDefaults.standard.removeObject(forKey: "rotationInterval")
         UserDefaults.standard.removeObject(forKey: "slideshowEnabled")
         UserDefaults.standard.removeObject(forKey: "aspectMode")
+        UserDefaults.standard.removeObject(forKey: "lastFolderBookmark")
+        UserDefaults.standard.removeObject(forKey: "lastFolderPath")
+        UserDefaults.standard.removeObject(forKey: "shuffleEnabled")
     }
 
     func testInitialState() {

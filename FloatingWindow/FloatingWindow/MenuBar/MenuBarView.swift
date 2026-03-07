@@ -193,7 +193,7 @@ struct MenuBarView: View {
                 panelController.showPanel()
             }
             appState.selectFolder(url)
-            SettingsStore.shared.lastFolderPath = url.path
+            SettingsStore.shared.saveBookmark(for: url)
         }
     }
 }
