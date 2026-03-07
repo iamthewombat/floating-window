@@ -79,6 +79,7 @@ struct MenuBarView: View {
                 .font(.caption)
 
             Toggle("Auto-rotate", isOn: $appState.slideshowEnabled)
+            Toggle("Shuffle", isOn: $appState.shuffleEnabled)
 
             if appState.slideshowEnabled {
                 Picker("Interval", selection: $appState.rotationInterval) {

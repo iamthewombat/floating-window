@@ -31,6 +31,13 @@ class AppState: ObservableObject {
         }
     }
 
+    @Published var shuffleEnabled: Bool = false {
+        didSet {
+            SettingsStore.shared.shuffleEnabled = shuffleEnabled
+            slideshowManager.shuffleEnabled = shuffleEnabled
+        }
+    }
+
     let slideshowManager = SlideshowManager()
 
     private var cancellables = Set<AnyCancellable>()
@@ -39,6 +46,7 @@ class AppState: ObservableObject {
         // Restore saved settings
         let store = SettingsStore.shared
         rotationInterval = store.rotationInterval
+        shuffleEnabled = store.shuffleEnabled
         slideshowEnabled = store.slideshowEnabled
         if let modeStr = AspectMode(rawValue: store.aspectMode) {
             aspectMode = modeStr

@@ -14,6 +14,9 @@ struct ImageContentView: View {
                         .aspectRatio(contentMode: appState.aspectMode == .fill ? .fill : .fit)
                         .frame(width: geo.size.width, height: geo.size.height)
                         .clipped()
+                        .id(image)
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.3), value: appState.currentImage)
                 } else {
                     VStack(spacing: 12) {
                         Image(systemName: "photo.on.rectangle")

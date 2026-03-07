@@ -11,6 +11,7 @@ class FloatingPanelController: ObservableObject {
 
     var currentPanel: FloatingPanel? { panel }
     private var imageCancellable: AnyCancellable?
+    private var frameObservers: [NSObjectProtocol] = []
 
     func setAppState(_ appState: AppState) {
         self.appState = appState
@@ -56,6 +57,7 @@ class FloatingPanelController: ObservableObject {
             }
 
             panel = p
+            observeFrameChanges(p)
         }
 
         panel?.makeKeyAndOrderFront(nil)
@@ -98,6 +100,23 @@ class FloatingPanelController: ObservableObject {
                 let scale = self.appState?.imageScale ?? 0.5
                 self.resizePanelToFit(panel, image: image, scale: scale)
             }
+    }
+
+    private func observeFrameChanges(_ panel: FloatingPanel) {
+        frameObservers.forEach { NotificationCenter.default.removeObserver($0) }
+        frameObservers.removeAll()
+
+        let saveFrame = { [weak panel] (_: Notification) in
+            guard let frame = panel?.frame else { return }
+            UserDefaults.standard.set(NSStringFromRect(frame), forKey: "floatingPanelFrame")
+        }
+
+        frameObservers.append(
+            NotificationCenter.default.addObserver(forName: NSWindow.didMoveNotification, object: panel, queue: .main, using: saveFrame)
+        )
+        frameObservers.append(
+            NotificationCenter.default.addObserver(forName: NSWindow.didResizeNotification, object: panel, queue: .main, using: saveFrame)
+        )
     }
 
     private func resizePanelToFit(_ panel: FloatingPanel, image: NSImage, scale: Double) {

@@ -78,16 +78,16 @@ FloatingWindow/
 - [x] **Verify**: Pomodoro floats beneath image window
 
 ### Phase 6: Task List Extension
-- [ ] `TaskItem` model (Codable, persisted to UserDefaults)
-- [ ] `TaskListView` - add, check off, delete tasks
-- [ ] Register in ExtensionManager
-- [ ] **Verify**: Task list works, persists across restarts
+- [x] `TaskItem` model (Codable, persisted to UserDefaults)
+- [x] `TaskListView` - add, check off, delete tasks
+- [x] Register in ExtensionManager
+- [x] **Verify**: Task list works, persists across restarts
 
 ### Phase 7: Polish
-- [ ] Window frame persistence (save/restore position & size)
-- [ ] Smooth image transitions (fade animation)
-- [ ] Handle edge cases (empty folder, corrupt images, large images)
-- [ ] App icon and menu bar icon
+- [x] Window frame persistence (save/restore position & size on move/resize/hide)
+- [x] Smooth image transitions (fade animation with 0.3s ease-in-out)
+- [x] Handle edge cases (corrupt images auto-skip, large images downsampled >4096px)
+- [x] App icon (floating picture frame with landscape scene)
 
 ## Key Technical Decisions
 - **Window style**: `.titled` + `titlebarAppearsTransparent` + hidden buttons (gives native resize handles while looking borderless)

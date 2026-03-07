@@ -7,9 +7,11 @@ class SlideshowManager: ObservableObject {
     @Published var folderURL: URL?
     @Published var currentIndex: Int = 0
     @Published var isRotating: Bool = false
+    @Published var shuffleEnabled: Bool = false
 
     private(set) var imageFiles: [URL] = []
     private var timer: Timer?
+    private var history: [Int] = [] // indices visited, for "previous" in shuffle mode
 
     private let supportedExtensions: Set<String> = [
         "png", "jpg", "jpeg", "gif", "heic", "heif", "webp", "tiff", "tif", "bmp"
@@ -47,24 +49,83 @@ class SlideshowManager: ObservableObject {
         }
     }
 
+    /// Maximum pixel dimension before downsampling to save memory.
+    private let maxPixelDimension: CGFloat = 4096
+
     func loadCurrentImage() {
         guard !imageFiles.isEmpty else {
             currentImage = nil
             return
         }
         let url = imageFiles[currentIndex]
-        currentImage = NSImage(contentsOf: url)
+
+        if let image = loadImage(from: url) {
+            currentImage = image
+        } else {
+            // Corrupt or unreadable image — remove from list and try next
+            imageFiles.remove(at: currentIndex)
+            if imageFiles.isEmpty {
+                currentImage = nil
+                return
+            }
+            currentIndex = currentIndex % imageFiles.count
+            loadCurrentImage()
+        }
+    }
+
+    /// Loads an image from a URL, downsampling very large images to save memory.
+    private func loadImage(from url: URL) -> NSImage? {
+        guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else {
+            return nil
+        }
+
+        // Check dimensions to decide whether to downsample
+        guard let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [CFString: Any],
+              let width = properties[kCGImagePropertyPixelWidth] as? CGFloat,
+              let height = properties[kCGImagePropertyPixelHeight] as? CGFloat else {
+            // Fall back to simple loading if we can't read properties
+            return NSImage(contentsOf: url)
+        }
+
+        let maxDim = max(width, height)
+        if maxDim > maxPixelDimension {
+            // Downsample large images
+            let options: [CFString: Any] = [
+                kCGImageSourceCreateThumbnailFromImageAlways: true,
+                kCGImageSourceThumbnailMaxPixelSize: maxPixelDimension,
+                kCGImageSourceCreateThumbnailWithTransform: true
+            ]
+            guard let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary) else {
+                return NSImage(contentsOf: url)
+            }
+            return NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+        }
+
+        return NSImage(contentsOf: url)
     }
 
     func nextImage() {
         guard !imageFiles.isEmpty else { return }
-        currentIndex = (currentIndex + 1) % imageFiles.count
+        history.append(currentIndex)
+        if shuffleEnabled && imageFiles.count > 1 {
+            var next: Int
+            repeat {
+                next = Int.random(in: 0..<imageFiles.count)
+            } while next == currentIndex
+            currentIndex = next
+        } else {
+            currentIndex = (currentIndex + 1) % imageFiles.count
+        }
         loadCurrentImage()
     }
 
     func previousImage() {
         guard !imageFiles.isEmpty else { return }
-        currentIndex = (currentIndex - 1 + imageFiles.count) % imageFiles.count
+        if shuffleEnabled, let prev = history.popLast() {
+            currentIndex = prev
+        } else {
+            currentIndex = (currentIndex - 1 + imageFiles.count) % imageFiles.count
+        }
         loadCurrentImage()
     }
 

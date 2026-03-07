@@ -21,9 +21,14 @@
 		A10012 /* PomodoroState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10012; };
 		A10013 /* PomodoroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10013; };
 		A10014 /* PomodoroExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10014; };
+		A10015 /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10015; };
+		A10016 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10016; };
+		A10017 /* TaskListExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10017; };
 		A20001 /* SlideshowManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20001; };
 		A20002 /* SettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20002; };
 		A20003 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20003; };
+		A20004 /* PomodoroStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20004; };
+		A20005 /* TaskListStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20005; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,9 +57,14 @@
 		B10012 /* PomodoroState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroState.swift; sourceTree = "<group>"; };
 		B10013 /* PomodoroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroView.swift; sourceTree = "<group>"; };
 		B10014 /* PomodoroExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroExtension.swift; sourceTree = "<group>"; };
+		B10015 /* TaskItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItem.swift; sourceTree = "<group>"; };
+		B10016 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
+		B10017 /* TaskListExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListExtension.swift; sourceTree = "<group>"; };
 		B20001 /* SlideshowManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideshowManagerTests.swift; sourceTree = "<group>"; };
 		B20002 /* SettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStoreTests.swift; sourceTree = "<group>"; };
 		B20003 /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
+		B20004 /* PomodoroStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroStateTests.swift; sourceTree = "<group>"; };
+		B20005 /* TaskListStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListStateTests.swift; sourceTree = "<group>"; };
 		C20001 /* FloatingWindowTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FloatingWindowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -142,8 +152,19 @@
 				B10010 /* ExtensionProtocol.swift */,
 				B10011 /* ExtensionManager.swift */,
 				E10009 /* Pomodoro */,
+				E10010 /* TaskList */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E10010 /* TaskList */ = {
+			isa = PBXGroup;
+			children = (
+				B10015 /* TaskItem.swift */,
+				B10016 /* TaskListView.swift */,
+				B10017 /* TaskListExtension.swift */,
+			);
+			path = TaskList;
 			sourceTree = "<group>";
 		};
 		E10009 /* Pomodoro */ = {
@@ -169,6 +190,8 @@
 				B20001 /* SlideshowManagerTests.swift */,
 				B20002 /* SettingsStoreTests.swift */,
 				B20003 /* AppStateTests.swift */,
+				B20004 /* PomodoroStateTests.swift */,
+				B20005 /* TaskListStateTests.swift */,
 			);
 			path = FloatingWindowTests;
 			sourceTree = "<group>";
@@ -277,6 +300,9 @@
 				A10012 /* PomodoroState.swift in Sources */,
 				A10013 /* PomodoroView.swift in Sources */,
 				A10014 /* PomodoroExtension.swift in Sources */,
+				A10015 /* TaskItem.swift in Sources */,
+				A10016 /* TaskListView.swift in Sources */,
+				A10017 /* TaskListExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,6 +313,8 @@
 				A20001 /* SlideshowManagerTests.swift in Sources */,
 				A20002 /* SettingsStoreTests.swift in Sources */,
 				A20003 /* AppStateTests.swift in Sources */,
+				A20004 /* PomodoroStateTests.swift in Sources */,
+				A20005 /* TaskListStateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

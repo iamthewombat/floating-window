@@ -30,4 +30,9 @@ class SettingsStore {
         }
         set { defaults.set(newValue, forKey: "slideshowEnabled") }
     }
+
+    var shuffleEnabled: Bool {
+        get { defaults.bool(forKey: "shuffleEnabled") }
+        set { defaults.set(newValue, forKey: "shuffleEnabled") }
+    }
 }
