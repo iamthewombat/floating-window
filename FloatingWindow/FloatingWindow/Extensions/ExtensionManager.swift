@@ -121,9 +121,10 @@ class ExtensionManager: ObservableObject {
         for ext in enabledExts {
             guard let panel = panels[ext.id] else { continue }
             let height = ext.preferredSize.height
-            let minWidth = ext.preferredSize.width
-            let panelWidth = max(mainFrame.width, minWidth)
-            // Center the extension under the main window if it's wider
+            // Keep the panel at its current width (or preferred width on first show),
+            // don't resize to match the image window
+            let panelWidth = panel.frame.width > 0 ? panel.frame.width : ext.preferredSize.width
+            // Center beneath the main window
             let panelX = mainFrame.midX - panelWidth / 2
             yOffset -= height
 
